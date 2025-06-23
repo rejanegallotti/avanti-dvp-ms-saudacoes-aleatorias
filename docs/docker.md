@@ -14,31 +14,33 @@ A melhor prática para criar imagens de contêineres para aplicações compilada
 No diretório raiz do seu projeto (`ms-saudacoes-aleatorias`), crie um arquivo chamado `Dockerfile` com o seguinte conteúdo:
 
 ```dockerfile
-# ---- Estágio de Build (Builder) ----
-# Define a imagem base para o estágio de construção. Usaremos a imagem oficial do Go 1.24.
+# --- Estágio de Build ---
+# Use uma imagem do Go baseada em Alpine. A versão pode ser ajustada.
 FROM golang:1.24-alpine AS builder
 
-# Define o diretório de trabalho dentro do contêiner.
+# Instale as ferramentas de compilação C (gcc, etc.)
+# 'build-base' é um meta-pacote que inclui o necessário em Alpine.
+RUN apk add --no-cache build-base gcc
+
+# Defina o diretório de trabalho dentro do container
 WORKDIR /app
 
-# Copia os arquivos de gerenciamento de dependências primeiro.
-# Isso aproveita o cache de camadas do Docker. Se go.mod e go.sum não mudarem,
-# o download das dependências não será executado novamente.
-COPY go.mod ./
-COPY go.sum ./
+# Copie os arquivos de gerenciamento de dependências primeiro para aproveitar o cache do Docker
+COPY go.mod go.sum ./
 
-# Baixa as dependências do projeto.
+# Baixe as dependências
 RUN go mod download
 
-# Copia todo o código-fonte do projeto para o contêiner.
+# Copie o restante do código-fonte da sua aplicação
 COPY . .
 
-# Compila a aplicação Go.
-# - CGO_ENABLED=0: Desabilita CGO para criar um binário estático, o que melhora a portabilidade.
-# -o /app/main: Especifica o nome e o local do arquivo de saída (o executável).
-RUN CGO_ENABLED=0 GOOS=linux go build -o /app/main ./main.go
+# Compile a aplicação com CGO habilitado.
+# -a: Força a reconstrução de pacotes que estão desatualizados.
+# -installsuffix cgo: Evita conflitos entre pacotes CGO e não-CGO.
+# O resultado é um binário estaticamente vinculado, que não precisa da libsqlite3.so na imagem final.
+RUN CGO_ENABLED=1 GOOS=linux go build -a -installsuffix cgo -o /app/main .
 
-# ---- Estágio Final (Final) ----
+# --- Estágio Final ---
 # Define a imagem final, que será muito menor.
 # A imagem 'alpine' é uma distribuição Linux mínima, ideal para produção.
 FROM alpine:latest

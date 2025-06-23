@@ -13,7 +13,7 @@ var DB *gorm.DB
 
 // ConnectDatabase inicializa a conexão com o banco de dados SQLite e realiza a migração.
 func ConnectDatabase() {
-	db, err := gorm.Open(sqlite.Open("greetings.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("file:greetings.db?_journal_mode=WAL&_mutex=no&_fk=true"), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Falha ao conectar ao banco de dados!")
 	}
