@@ -1,5 +1,5 @@
 name: CI/CD Pipeline
-
+# Executar a pipeline
 on:
   push:
     branches:
