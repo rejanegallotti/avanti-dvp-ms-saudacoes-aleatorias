@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"  // <- Adicione esta linha
+
 	"github.com/avanti-dvp/ms-saudacoes-aleatorias/database"
 	"github.com/avanti-dvp/ms-saudacoes-aleatorias/handlers"
 
