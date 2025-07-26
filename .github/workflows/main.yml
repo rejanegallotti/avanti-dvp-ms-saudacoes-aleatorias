@@ -39,9 +39,9 @@ jobs:
           go vet $(go list ./...)
 
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v7
+        uses: golangci/golangci-lint-action@v6
         with:
-          version: v1.58 # Use uma versão específica para builds consistentes
+          version: v1.59 # Use uma versão específica para builds consistentes
           args: --verbose --timeout=5m --build-tags=tools
           install-mode: binary
           only-new-issues: false
