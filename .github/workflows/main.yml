@@ -42,7 +42,7 @@ jobs:
         uses: golangci/golangci-lint-action@v6
         with:
           version: v1.58 # Use uma versão específica para builds consistentes
-          args: --verbose
+          args: --verbose --timeout=5m --build-tags=tools
         env:  # <--- ADICIONE ESTA SEÇÃO
           GOFLAGS: "-buildvcs=false"  # <--- ESTA LINHA ESPECIFICAMENTE
 
