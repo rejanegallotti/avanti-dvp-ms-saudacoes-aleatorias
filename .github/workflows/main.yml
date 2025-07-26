@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - '**' # Executa em todas as branches
+      - '*' # Executa em todas as branches
   pull_request:
     branches:
       - main
