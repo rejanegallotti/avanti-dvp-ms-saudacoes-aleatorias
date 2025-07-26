@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - '*' # Executa em todas as branches
+      - '**' # Executa em todas as branches
   pull_request:
     branches:
       - main
@@ -43,6 +43,8 @@ jobs:
         with:
           version: v1.58 # Use uma versão específica para builds consistentes
           args: --verbose
+        env:  # <--- ADICIONE ESTA SEÇÃO
+          GOFLAGS: "-buildvcs=false"  # <--- ESTA LINHA ESPECIFICAMENTE
 
   # Job para rodar os testes
   test:
